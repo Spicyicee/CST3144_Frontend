@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>After School Classes</title>
+  <script src="https://unpkg.com/vue@2.7.8/dist/vue.js"></script>
+  <script src="js/course.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome-bundled@6.7.2/all.min.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1>After School Classes</h1>
+      <button class="checkout-btn" v-on:click="toggleCheckout">
+        <span>{{ cartItemCount }}</span>
+        <span class="fa-solid fa-cart-shopping"></span>
+        <span>Checkout</span>
+      </button>
+    </header>
+
+    <main>
+      <!-- PRODUCT PAGE -->
+      <div v-if="showProduct">
+        <div class="container">
+          <!-- LEFT SIDE: Sorting Options -->
+          <div class="sidebar">
+            <h2>Sort by</h2>
+            
+            <!-- What to sort by -->
+            <div class="sort-group">
+              <div class="radio-option">
+                <input type="radio" id="subject" value="subject" v-model="sortBy"/>
+                <label for="subject" :class="{ bold: sortBy === 'subject' }">Subject</label>
+              </div>
+              
+              <div class="radio-option">
+                <input type="radio" id="location" value="location" v-model="sortBy"/>
+                <label for="location" :class="{ bold: sortBy === 'location' }">Location</label>
+              </div>
+              
+              <div class="radio-option">
+                <input type="radio" id="price" value="price" v-model="sortBy"/>
+                <label for="price" :class="{ bold: sortBy === 'price' }">Price</label>
+              </div>
+              
+              <div class="radio-option">
+                <input type="radio" id="spaces" value="spaces" v-model="sortBy"/>
+                <label for="spaces" :class="{ bold: sortBy === 'spaces' }">Availability</label>
+              </div>
+            </div>
+            
+            <!-- How to sort (ascending/descending) -->
+            <div class="sort-group">
+              <div class="radio-option">
+                <input type="radio" id="ascending" value="ascending" v-model="sortOrder"/>
+                <label for="ascending" :class="{ bold: sortOrder === 'ascending' }">Ascending</label>
+              </div>
+              
+              <div class="radio-option">
+                <input type="radio" id="descending" value="descending" v-model="sortOrder"/>
+                <label for="descending" :class="{ bold: sortOrder === 'descending' }">Descending</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT SIDE: Class Cards -->
+          <div class="content">
+            <!-- Search Bar -->
+            <div class="search-container">
+              <div class="search-bar">
+                <span class="fa-solid fa-search search-icon"></span>
+                <input 
+                  type="text" 
+                  v-model="searchQuery" 
+                  placeholder="Search by subject or location..."
+                  class="search-input"
+                />
+                <button v-if="searchQuery" v-on:click="searchQuery = ''" class="clear-search">
+                  <span class="fa-solid fa-times"></span>
+                </button>
+              </div>
+              <div class="results-info" v-if="searchQuery">
+                Found {{ filteredProducts.length }} result(s) for "{{ searchQuery }}"
+              </div>
+            </div>
+
+            <div class="cards-grid">
+              <div v-for="product in filteredProducts" class="card">
+                <div class="card-header">
+                  <div class="card-info">
+                    <div><strong>Subject:</strong> {{ product.subject }}</div>
+                    <div><strong>Location:</strong> {{ product.location }}</div>
+                    <div><strong>Price:</strong> £{{ product.price }}</div>
+                    <div><strong>Spaces:</strong> {{ product.spaces }}</div>
+                  </div>
+                  <div class="card-icon">
+                    <img :src="product.image" :alt="product.subject">
+                  </div>
+                </div>
+                
+                <button class="add-to-cart" v-on:click="addToCart(product)" :disabled="!canAddToCart(product)">
+                  Add to cart
+                </button>
+              </div>
+            </div>
+
+            <div v-if="filteredProducts.length === 0" class="no-results">
+              <span class="fa-solid fa-search" style="font-size: 48px; color: #ccc; margin-bottom: 15px;"></span>
+              <p>No classes found matching your search.</p>
+              <button class="btn-primary" v-on:click="searchQuery = ''">Clear Search</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHECKOUT PAGE -->
+      <div v-else>
+        <div class="checkout-page">
+          <h2>Checkout</h2>
+          
+          <div v-if="cartItemCount > 0">
+            <!-- Cart Items Display -->
+            <div class="cart-items">
+              <h3>Your Cart Items</h3>
+              <div v-for="item in cartItems" class="cart-item">
+                <img :src="item.product.image" :alt="item.product.subject" class="cart-item-image">
+                <div class="cart-item-info">
+                  <div><strong>{{ item.product.subject }}</strong></div>
+                  <div>Location: {{ item.product.location }}</div>
+                  <div>Quantity: {{ item.quantity }}</div>
+                </div>
+                <div class="cart-item-price">
+                  £{{ item.product.price * item.quantity }}
+                </div>
+                <button class="delete-btn" v-on:click="removeFromCart(item)" title="Remove from cart">
+                  <span class="fa-solid fa-trash"></span>
+                </button>
+              </div>
+              <div class="cart-total">
+                <strong>Total: £{{ cartTotal }}</strong>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label>First Name: <span class="required">*</span></label>
+              <input v-model.trim="order.firstName" type="text" required/>
+              <span class="error-message" v-if="formErrors.firstName">{{ formErrors.firstName }}</span>
+            </div>
+            
+            <div class="form-group">
+              <label>Last Name: <span class="required">*</span></label>
+              <input v-model.trim="order.lastName" type="text" required/>
+              <span class="error-message" v-if="formErrors.lastName">{{ formErrors.lastName }}</span>
+            </div>
+            
+            <div class="form-group">
+              <label>Address: <span class="required">*</span></label>
+              <input v-model.trim="order.address" type="text" required/>
+              <span class="error-message" v-if="formErrors.address">{{ formErrors.address }}</span>
+            </div>
+            
+            <div class="form-group">
+              <label>City: <span class="required">*</span></label>
+              <input v-model.trim="order.city" type="text" required/>
+              <span class="error-message" v-if="formErrors.city">{{ formErrors.city }}</span>
+            </div>
+            
+            <div class="form-group">
+              <label>State: <span class="required">*</span></label>
+              <select v-model="order.state" required>
+                <option disabled value="">Select State</option>
+                <option v-for="(state, key) in states" :value="state">
+                  {{ key }}
+                </option>
+              </select>
+              <span class="error-message" v-if="formErrors.state">{{ formErrors.state }}</span>
+            </div>
+            
+            <div class="form-group">
+              <label>Zip/Postal Code: <span class="required">*</span></label>
+              <input v-model.trim="order.zip" type="text" required/>
+              <span class="error-message" v-if="formErrors.zip">{{ formErrors.zip }}</span>
+            </div>
+            
+            <div class="checkbox-group">
+              <input type="checkbox" id="gift" v-model="order.gift"/>
+              <label for="gift">This is a gift</label>
+            </div>
+            
+            <div class="radio-group">
+              <label style="display: block; margin-bottom: 10px; font-weight: 600;">Delivery Method: <span class="required">*</span></label>
+              <div class="radio-inline">
+                <input type="radio" id="home" value="Home" v-model="order.method"/>
+                <label for="home">Home</label>
+              </div>
+              <div class="radio-inline">
+                <input type="radio" id="business" value="Business" v-model="order.method"/>
+                <label for="business">Business</label>
+              </div>
+              <span class="error-message" v-if="formErrors.method">{{ formErrors.method }}</span>
+            </div>
+            
+            <div class="order-summary">
+              <h3>Order Summary</h3>
+              <p><strong>First Name:</strong> {{ order.firstName }}</p>
+              <p><strong>Last Name:</strong> {{ order.lastName }}</p>
+              <p><strong>Address:</strong> {{ order.address }}</p>
+              <p><strong>City:</strong> {{ order.city }}</p>
+              <p><strong>State:</strong> {{ order.state }}</p>
+              <p><strong>Zip:</strong> {{ order.zip }}</p>
+              <p><strong>Delivery Method:</strong> {{ order.method }}</p>
+              <p><strong>Gift:</strong> {{ order.gift ? 'Yes' : 'No' }}</p>
+              <p><strong>Items in Cart:</strong> {{ cartItemCount }}</p>
+            </div>
+            
+            <div class="button-group">
+              <button class="btn-primary" v-on:click="submitForm">Place Order</button>
+              <button class="btn-secondary" v-on:click="toggleCheckout">Continue Shopping</button>
+            </div>
+          </div>
+          
+          <div v-else class="empty-cart">
+            <p style="font-size: 18px;">Your cart is empty</p>
+            <button class="btn-primary" v-on:click="toggleCheckout" style="margin-top: 20px;">Continue Shopping</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
