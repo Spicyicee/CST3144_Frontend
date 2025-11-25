@@ -3,38 +3,82 @@
 <head>
   <title>After School Classes</title>
   <script src="https://unpkg.com/vue@2.7.8/dist/vue.js"></script>
-  <script src="js/app.js"></script>
+  <script src="js/course.js"></script>
   <link href="css/style.css" rel="stylesheet">
 </head>
 <body>
   <div id="app">
     <header>
       <h1>After School Classes</h1>
-      <button class="checkout-btn" v-if="cartItemCount > 0">
-        Cart: {{ cartItemCount }}
+      <button class="checkout-btn" v-on:click="toggleCheckout" v-if="cartItemCount > 0">
+        {{ cartItemCount }} - Checkout
       </button>
     </header>
 
     <main>
-      <div class="cards-grid">
-        <div v-for="product in products" class="card">
-          <div class="card-header">
-            <div class="card-info">
-              <div><strong>Subject:</strong> {{ product.subject }}</div>
-              <div><strong>Location:</strong> {{ product.location }}</div>
-              <div><strong>Price:</strong> £{{ product.price }}</div>
-              <div><strong>Spaces:</strong> {{ product.spaces }}</div>
+      <!-- PRODUCT PAGE -->
+      <div v-if="showProduct">
+        <div class="cards-grid">
+          <div v-for="product in products" class="card">
+            <div class="card-header">
+              <div class="card-info">
+                <div><strong>Subject:</strong> {{ product.subject }}</div>
+                <div><strong>Location:</strong> {{ product.location }}</div>
+                <div><strong>Price:</strong> £{{ product.price }}</div>
+                <div><strong>Spaces:</strong> {{ product.spaces }}</div>
+              </div>
+              <div class="card-icon">
+                <img :src="product.image" :alt="product.subject">
+              </div>
             </div>
-            <div class="card-icon">
-              <img :src="product.image" :alt="product.subject">
+            
+            <button class="add-to-cart" 
+              v-on:click="addToCart(product)" 
+              :disabled="!canAddToCart(product)">
+              Add to cart
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHECKOUT PAGE -->
+      <div v-else>
+        <div class="checkout-page">
+          <h2>Checkout</h2>
+          
+          <div v-if="cartItemCount > 0">
+            <div class="cart-items">
+              <h3>Your Cart Items</h3>
+              <div v-for="item in cartItems" class="cart-item">
+                <img :src="item.product.image" :alt="item.product.subject" class="cart-item-image">
+                <div class="cart-item-info">
+                  <div><strong>{{ item.product.subject }}</strong></div>
+                  <div>Location: {{ item.product.location }}</div>
+                  <div>Quantity: {{ item.quantity }}</div>
+                </div>
+                <div class="cart-item-price">
+                  £{{ item.product.price * item.quantity }}
+                </div>
+                <button class="delete-btn" v-on:click="removeFromCart(item)">
+                  Remove
+                </button>
+              </div>
+              <div class="cart-total">
+                <strong>Total: £{{ cartTotal }}</strong>
+              </div>
             </div>
+            
+            <button class="btn-secondary" v-on:click="toggleCheckout">
+              Continue Shopping
+            </button>
           </div>
           
-          <button class="add-to-cart" 
-            v-on:click="addToCart(product)" 
-            :disabled="!canAddToCart(product)">
-            Add to cart
-          </button>
+          <div v-else class="empty-cart">
+            <p>Your cart is empty</p>
+            <button class="btn-primary" v-on:click="toggleCheckout">
+              Continue Shopping
+            </button>
+          </div>
         </div>
       </div>
     </main>
