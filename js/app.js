@@ -74,7 +74,9 @@ var webstore = new Vue({
       WY: 'Wyoming'
     },
     products: courses,
-    cart: []
+    cart: [],
+    sortBy: 'subject',
+    sortOrder: 'ascending'
   },
   computed: {
     cartItemCount() {
@@ -87,6 +89,25 @@ var webstore = new Vue({
     },
     cartItems() {
       return this.cart;
+    },
+    sortedProducts() {
+      let sorted = this.products.slice().sort((a, b) => {
+        let comparison = 0;
+        
+        if (this.sortBy === 'subject') {
+          comparison = a.subject.localeCompare(b.subject);
+        } else if (this.sortBy === 'location') {
+          comparison = a.location.localeCompare(b.location);
+        } else if (this.sortBy === 'price') {
+          comparison = a.price - b.price;
+        } else if (this.sortBy === 'spaces') {
+          comparison = a.spaces - b.spaces;
+        }
+        
+        return this.sortOrder === 'ascending' ? comparison : -comparison;
+      });
+      
+      return sorted;
     }
   },
   methods: {

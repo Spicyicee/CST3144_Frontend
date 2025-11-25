@@ -18,25 +18,71 @@
     <main>
       <!-- PRODUCT PAGE -->
       <div v-if="showProduct">
-        <div class="cards-grid">
-          <div v-for="product in products" class="card">
-            <div class="card-header">
-              <div class="card-info">
-                <div><strong>Subject:</strong> {{ product.subject }}</div>
-                <div><strong>Location:</strong> {{ product.location }}</div>
-                <div><strong>Price:</strong> £{{ product.price }}</div>
-                <div><strong>Spaces:</strong> {{ product.spaces }}</div>
+        <div class="container">
+          <!-- LEFT SIDE: Sorting Options -->
+          <div class="sidebar">
+            <h2>Sort by</h2>
+            
+            <!-- What to sort by -->
+            <div class="sort-group">
+              <div class="radio-option">
+                <input type="radio" id="subject" value="subject" v-model="sortBy"/>
+                <label for="subject" :class="{ bold: sortBy === 'subject' }">Subject</label>
               </div>
-              <div class="card-icon">
-                <img :src="product.image" :alt="product.subject">
+              
+              <div class="radio-option">
+                <input type="radio" id="location" value="location" v-model="sortBy"/>
+                <label for="location" :class="{ bold: sortBy === 'location' }">Location</label>
+              </div>
+              
+              <div class="radio-option">
+                <input type="radio" id="price" value="price" v-model="sortBy"/>
+                <label for="price" :class="{ bold: sortBy === 'price' }">Price</label>
+              </div>
+              
+              <div class="radio-option">
+                <input type="radio" id="spaces" value="spaces" v-model="sortBy"/>
+                <label for="spaces" :class="{ bold: sortBy === 'spaces' }">Availability</label>
               </div>
             </div>
             
-            <button class="add-to-cart" 
-              v-on:click="addToCart(product)" 
-              :disabled="!canAddToCart(product)">
-              Add to cart
-            </button>
+            <!-- How to sort (ascending/descending) -->
+            <div class="sort-group">
+              <div class="radio-option">
+                <input type="radio" id="ascending" value="ascending" v-model="sortOrder"/>
+                <label for="ascending" :class="{ bold: sortOrder === 'ascending' }">Ascending</label>
+              </div>
+              
+              <div class="radio-option">
+                <input type="radio" id="descending" value="descending" v-model="sortOrder"/>
+                <label for="descending" :class="{ bold: sortOrder === 'descending' }">Descending</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT SIDE: Class Cards -->
+          <div class="content">
+            <div class="cards-grid">
+              <div v-for="product in sortedProducts" class="card">
+                <div class="card-header">
+                  <div class="card-info">
+                    <div><strong>Subject:</strong> {{ product.subject }}</div>
+                    <div><strong>Location:</strong> {{ product.location }}</div>
+                    <div><strong>Price:</strong> £{{ product.price }}</div>
+                    <div><strong>Spaces:</strong> {{ product.spaces }}</div>
+                  </div>
+                  <div class="card-icon">
+                    <img :src="product.image" :alt="product.subject">
+                  </div>
+                </div>
+                
+                <button class="add-to-cart" 
+                  v-on:click="addToCart(product)" 
+                  :disabled="!canAddToCart(product)">
+                  Add to cart
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -68,7 +114,6 @@
               </div>
             </div>
             
-            <!-- Order Form with Validation -->
             <div class="form-group">
               <label>First Name: <span class="required">*</span></label>
               <input v-model.trim="order.firstName" type="text" required/>
