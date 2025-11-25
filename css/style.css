@@ -109,7 +109,7 @@ main {
 }
 
 .cart-items {
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .cart-items h3 {
@@ -167,6 +167,69 @@ main {
   margin-top: 15px;
   padding-top: 15px;
   border-top: 2px solid #2c3e50;
+}
+
+/* Form Styles */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.checkbox-group {
+  margin-bottom: 20px;
+}
+
+.checkbox-group input {
+  margin-right: 10px;
+}
+
+.radio-group {
+  margin-bottom: 20px;
+}
+
+.radio-inline {
+  display: inline-block;
+  margin-right: 20px;
+}
+
+.radio-inline input {
+  margin-right: 5px;
+}
+
+.order-summary {
+  background-color: #ecf0f1;
+  padding: 20px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.order-summary h3 {
+  margin-bottom: 15px;
+  color: #2c3e50;
+}
+
+.order-summary p {
+  margin-bottom: 8px;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
 }
 
 .empty-cart {
