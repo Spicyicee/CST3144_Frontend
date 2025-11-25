@@ -12,14 +12,15 @@
     <header>
       <h1>After School Classes</h1>
       <button 
-        class="checkout-btn" 
-        v-on:click="toggleCheckout"
-        v-if="cartItemCount > 0"
-      >
-        <span>{{ cartItemCount }}</span>
-        <span class="fa-solid fa-cart-shopping"></span>
-        <span>Checkout</span>
-      </button>
+  class="checkout-btn" 
+  v-on:click="toggleCheckout"
+  v-if="cartItemCount > 0"
+>
+  <span>{{ cartItemCount }}</span>
+  <span class="fa-solid fa-cart-shopping"></span>
+  <span>Checkout</span>
+</button>
+
     </header>
 
     <main>
