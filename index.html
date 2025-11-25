@@ -62,8 +62,26 @@
 
           <!-- RIGHT SIDE: Class Cards -->
           <div class="content">
+            <!-- Search Bar -->
+            <div class="search-container">
+              <div class="search-bar">
+                <input 
+                  type="text" 
+                  v-model="searchQuery" 
+                  placeholder="Search by subject or location..."
+                  class="search-input"
+                />
+                <button v-if="searchQuery" v-on:click="searchQuery = ''" class="clear-search">
+                  Clear
+                </button>
+              </div>
+              <div class="results-info" v-if="searchQuery">
+                Found {{ filteredProducts.length }} result(s) for "{{ searchQuery }}"
+              </div>
+            </div>
+
             <div class="cards-grid">
-              <div v-for="product in sortedProducts" class="card">
+              <div v-for="product in filteredProducts" class="card">
                 <div class="card-header">
                   <div class="card-info">
                     <div><strong>Subject:</strong> {{ product.subject }}</div>
@@ -77,11 +95,15 @@
                 </div>
                 
                 <button class="add-to-cart" 
-                  v-on:click="addToCart(product)" 
-                  :disabled="!canAddToCart(product)">
+                v-on:click="addToCart(product)" :disabled="!canAddToCart(product)">
                   Add to cart
                 </button>
               </div>
+            </div>
+
+            <div v-if="filteredProducts.length === 0" class="no-results">
+              <p>No classes found matching your search.</p>
+              <button class="btn-primary" v-on:click="searchQuery = ''">Clear Search</button>
             </div>
           </div>
         </div>
@@ -93,6 +115,7 @@
           <h2>Checkout</h2>
           
           <div v-if="cartItemCount > 0">
+            <!-- Cart Items Display -->
             <div class="cart-items">
               <h3>Your Cart Items</h3>
               <div v-for="item in cartItems" class="cart-item">
@@ -193,8 +216,8 @@
           </div>
           
           <div v-else class="empty-cart">
-            <p>Your cart is empty</p>
-            <button class="btn-primary" v-on:click="toggleCheckout">Continue Shopping</button>
+            <p style="font-size: 18px;">Your cart is empty</p>
+            <button class="btn-primary" v-on:click="toggleCheckout" style="margin-top: 20px;">Continue Shopping</button>
           </div>
         </div>
       </div>
