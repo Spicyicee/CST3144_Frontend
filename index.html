@@ -68,40 +68,46 @@
               </div>
             </div>
             
-            <!-- Order Form -->
+            <!-- Order Form with Validation -->
             <div class="form-group">
-              <label>First Name:</label>
-              <input v-model="order.firstName" type="text"/>
+              <label>First Name: <span class="required">*</span></label>
+              <input v-model.trim="order.firstName" type="text" required/>
+              <span class="error-message" v-if="formErrors.firstName">{{ formErrors.firstName }}</span>
             </div>
             
             <div class="form-group">
-              <label>Last Name:</label>
-              <input v-model="order.lastName" type="text"/>
+              <label>Last Name: <span class="required">*</span></label>
+              <input v-model.trim="order.lastName" type="text" required/>
+              <span class="error-message" v-if="formErrors.lastName">{{ formErrors.lastName }}</span>
             </div>
             
             <div class="form-group">
-              <label>Address:</label>
-              <input v-model="order.address" type="text"/>
+              <label>Address: <span class="required">*</span></label>
+              <input v-model.trim="order.address" type="text" required/>
+              <span class="error-message" v-if="formErrors.address">{{ formErrors.address }}</span>
             </div>
             
             <div class="form-group">
-              <label>City:</label>
-              <input v-model="order.city" type="text"/>
+              <label>City: <span class="required">*</span></label>
+              <input v-model.trim="order.city" type="text" required/>
+              <span class="error-message" v-if="formErrors.city">{{ formErrors.city }}</span>
             </div>
             
             <div class="form-group">
-              <label>State:</label>
-              <select v-model="order.state">
+              <label>State: <span class="required">*</span></label>
+              <select v-model="order.state" required>
                 <option disabled value="">Select State</option>
                 <option v-for="(state, key) in states" :value="state">
                   {{ key }}
                 </option>
               </select>
+              <span class="error-message" v-if="formErrors.state">{{ formErrors.state }}</span>
             </div>
             
             <div class="form-group">
-              <label>Zip/Postal Code:</label>
-              <input v-model="order.zip" type="text"/>
+              <label>Zip/Postal Code: <span class="required">*</span></label>
+              <input v-model.trim="order.zip" type="text" required/>
+              <span class="error-message" v-if="formErrors.zip">{{ formErrors.zip }}</span>
             </div>
             
             <div class="checkbox-group">
@@ -110,7 +116,7 @@
             </div>
             
             <div class="radio-group">
-              <label style="display: block; margin-bottom: 10px;">Delivery Method:</label>
+              <label style="display: block; margin-bottom: 10px; font-weight: 600;">Delivery Method: <span class="required">*</span></label>
               <div class="radio-inline">
                 <input type="radio" id="home" value="Home" v-model="order.method"/>
                 <label for="home">Home</label>
@@ -119,6 +125,7 @@
                 <input type="radio" id="business" value="Business" v-model="order.method"/>
                 <label for="business">Business</label>
               </div>
+              <span class="error-message" v-if="formErrors.method">{{ formErrors.method }}</span>
             </div>
             
             <div class="order-summary">
@@ -131,6 +138,7 @@
               <p><strong>Zip:</strong> {{ order.zip }}</p>
               <p><strong>Delivery Method:</strong> {{ order.method }}</p>
               <p><strong>Gift:</strong> {{ order.gift ? 'Yes' : 'No' }}</p>
+              <p><strong>Items in Cart:</strong> {{ cartItemCount }}</p>
             </div>
             
             <div class="button-group">

@@ -181,6 +181,10 @@ main {
   color: #2c3e50;
 }
 
+.required {
+  color: #e74c3c;
+}
+
 .form-group input,
 .form-group select {
   width: 100%;
@@ -188,6 +192,13 @@ main {
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
+}
+
+.error-message {
+  display: block;
+  color: #e74c3c;
+  font-size: 12px;
+  margin-top: 5px;
 }
 
 .checkbox-group {
