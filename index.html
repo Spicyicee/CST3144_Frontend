@@ -10,6 +10,9 @@
   <div id="app">
     <header>
       <h1>After School Classes</h1>
+      <button class="checkout-btn" v-if="cartItemCount > 0">
+        Cart: {{ cartItemCount }}
+      </button>
     </header>
 
     <main>
@@ -26,6 +29,12 @@
               <img :src="product.image" :alt="product.subject">
             </div>
           </div>
+          
+          <button class="add-to-cart" 
+            v-on:click="addToCart(product)" 
+            :disabled="!canAddToCart(product)">
+            Add to cart
+          </button>
         </div>
       </div>
     </main>

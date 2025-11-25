@@ -14,6 +14,23 @@ header {
   color: white;
   padding: 20px;
   text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.checkout-btn {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.checkout-btn:hover {
+  background-color: #2980b9;
 }
 
 main {
@@ -40,6 +57,7 @@ main {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  margin-bottom: 15px;
 }
 
 .card-info {
@@ -55,4 +73,24 @@ main {
   height: 80px;
   object-fit: cover;
   border-radius: 4px;
+}
+
+.add-to-cart {
+  width: 100%;
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.add-to-cart:hover {
+  background-color: #229954;
+}
+
+.add-to-cart:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
 }
